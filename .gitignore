@@ -1,0 +1,25 @@
+# ---- Vivado generated files ----
+vivado/
+.Xil/
+*.jou
+*.log
+*.str
+*.backup.*
+*.pb
+hs_err_pid*
+
+# ---- Simulation output ----
+xsim.dir/
+*.wdb
+*.vcd
+
+# ---- Generated programming files (copy the final .bit somewhere safe for the demo) ----
+*.bit
+
+# ---- Commercial game ROMs directly in roms/ (copyrighted; test ROMs in roms/tests/ are fine) ----
+roms/*.gb
+
+# ---- Editor and OS clutter ----
+.vscode/
+.DS_Store
+Thumbs.db
