@@ -39,4 +39,22 @@ package gb_pkg;
     else                   return REG_IE;
   endfunction
 
+  // ALU operations (shared by alu.sv, ~decoder.sv, and ~tb_alu.sv)
+  typedef enum logic [4:0] {
+    ALU_ADD, ALU_ADC, ALU_SUB, ALU_SBC,
+    ALU_AND, ALU_XOR, ALU_OR,  ALU_CP,
+    ALU_INC, ALU_DEC,
+    ALU_DAA, ALU_CPL, ALU_SCF, ALU_CCF,
+    ALU_RLC, ALU_RRC, ALU_RL,  ALU_RR,
+    ALU_SLA, ALU_SRA, ALU_SWAP, ALU_SRL,
+    ALU_BIT, ALU_RES, ALU_SET,
+    ALU_PASS
+  } alu_op_t;
+
+  // Flag bit positions inside F / the ALU flag bus {Z, N, H, C}
+  localparam int FLAG_Z = 3;
+  localparam int FLAG_N = 2;
+  localparam int FLAG_H = 1;
+  localparam int FLAG_C = 0;
+
 endpackage
