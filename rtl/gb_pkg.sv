@@ -51,6 +51,46 @@ package gb_pkg;
     ALU_PASS
   } alu_op_t;
 
+  // 3-bit register codes, same encoding the opcodes use
+  localparam logic [2:0] R8_B = 3'd0, R8_C = 3'd1, R8_D = 3'd2, R8_E = 3'd3,
+                         R8_H = 3'd4, R8_L = 3'd5, R8_HL_MEM = 3'd6, R8_A = 3'd7;
+
+  // 16-bit register pairs. The first four match opcode bits [5:4];
+  // PUSH/POP use AF where other instructions use SP.
+  typedef enum logic [2:0] {
+    RP_BC, RP_DE, RP_HL, RP_SP, RP_AF
+  } rp_t;
+
+  // Instruction groups produced by the decoder. The CPU's state machine uses
+  // this to decide which bus cycles to run.
+  typedef enum logic [5:0] {
+    // control
+    I_NOP, I_STOP, I_HALT, I_DI, I_EI, I_PREFIX_CB, I_ILLEGAL,
+    // 8-bit loads (R8 code 110 means (HL))
+    I_LD_R_R, I_LD_R_N,
+    I_LD_A_IND, I_LD_IND_A,         // A <-> (BC), (DE), (HL+), (HL-)
+    I_LD_A_NN,  I_LD_NN_A,          // A <-> (nn)
+    I_LDH_A_N,  I_LDH_N_A,          // A <-> (0xFF00 + n)
+    I_LDH_A_C,  I_LDH_C_A,          // A <-> (0xFF00 + C)
+    // 16-bit loads and stack
+    I_LD_RR_NN, I_LD_NN_SP, I_LD_SP_HL, I_LD_HL_SP_E, I_PUSH, I_POP,
+    // 8-bit ALU
+    I_ALU_R, I_ALU_N,               // A op register, A op immediate
+    I_INCDEC_R,                     // INC / DEC register
+    I_ACC,                          // DAA, CPL, SCF, CCF
+    I_ROT_A,                        // RLCA, RRCA, RLA, RRA
+    I_CB,                           // every CB-prefixed instruction
+    // 16-bit arithmetic
+    I_INC_RR, I_DEC_RR, I_ADD_HL_RR, I_ADD_SP_E,
+    // jumps, calls, returns
+    I_JP_NN, I_JP_HL, I_JR, I_CALL, I_RET, I_RETI, I_RST
+  } instr_t;
+
+  // Branch conditions, same encoding as opcode bits [4:3]
+  typedef enum logic [1:0] {
+    COND_NZ, COND_Z, COND_NC, COND_C
+  } cond_t;
+
   // Flag bit positions inside F / the ALU flag bus {Z, N, H, C}
   localparam int FLAG_Z = 3;
   localparam int FLAG_N = 2;
